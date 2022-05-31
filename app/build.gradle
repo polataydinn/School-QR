@@ -71,4 +71,8 @@ dependencies {
     //Navigation
     implementation 'androidx.navigation:navigation-fragment-ktx:2.4.2'
     implementation 'androidx.navigation:navigation-ui-ktx:2.4.2'
+
+    //QR
+    implementation 'com.budiyev.android:code-scanner:2.1.0'
+    implementation 'androidmads.library.qrgenearator:QRGenearator:1.0.4'
 }

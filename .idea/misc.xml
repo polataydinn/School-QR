@@ -5,13 +5,20 @@
       <map>
         <entry key="app/src/main/res/drawable/button_background.xml" value="0.2215" />
         <entry key="app/src/main/res/drawable/button_ui_background.xml" value="0.2215" />
+        <entry key="app/src/main/res/drawable/custom_lesson_item_background.xml" value="0.2215" />
+        <entry key="app/src/main/res/drawable/custom_radius_background_dark_purple.xml" value="0.2215" />
         <entry key="app/src/main/res/drawable/gradient.xml" value="0.2215" />
         <entry key="app/src/main/res/drawable/ic_student_black.xml" value="0.2215" />
         <entry key="app/src/main/res/layout/activity_authentication.xml" value="0.3880208333333333" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.3880208333333333" />
+        <entry key="app/src/main/res/layout/custom_loading_dialog.xml" value="0.3880208333333333" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.2078125" />
+        <entry key="app/src/main/res/layout/fragment_new_lesson.xml" value="0.3880208333333333" />
         <entry key="app/src/main/res/layout/fragment_register.xml" value="0.3880208333333333" />
         <entry key="app/src/main/res/layout/fragment_student_login.xml" value="0.3880208333333333" />
+        <entry key="app/src/main/res/layout/fragment_teacher.xml" value="0.36944444444444446" />
         <entry key="app/src/main/res/layout/fragment_teacher_login.xml" value="0.3880208333333333" />
+        <entry key="app/src/main/res/layout/row_lessons_item.xml" value="0.34455257206852974" />
         <entry key="app/src/main/res/menu/auth_bottom_menu.xml" value="0.3880208333333333" />
       </map>
     </option>

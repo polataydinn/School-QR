@@ -8,3 +8,7 @@ fun String.toUserName(): String {
 fun String.ifStringIsNumber(): Boolean {
     return this.matches("-?\\d+(\\.\\d+)?".toRegex())
 }
+
+fun String.isEmailValid(): Boolean {
+    return android.util.Patterns.EMAIL_ADDRESS.matcher(this).matches()
+}
