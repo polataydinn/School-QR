@@ -55,12 +55,16 @@ class RegisterFragment : BindingFragment<FragmentRegisterBinding>() {
         }
 
         viewModel.isUserVerified.observe(viewLifecycleOwner) {
+            val mail = Firebase.auth.currentUser?.email
             if (it) {
                 Toast.makeText(context, "Kullanıcı başarıyla kayıt edildi", Toast.LENGTH_SHORT)
                     .show()
-                (activity as AuthenticationActivity).startMainActivity()
+                if (mail != null && mail.contains("@ogr.ksu.edu.tr")) {
+                    (activity as AuthenticationActivity).startMainActivity(true)
+                } else {
+                    (activity as AuthenticationActivity).startMainActivity(false)
+                }
             } else {
-                val mail = Firebase.auth.currentUser?.email
                 if (mail != null) {
                     Toast.makeText(
                         context,

@@ -1,5 +1,6 @@
 package com.osman.studentqr.presentation.fragment.new_lesson
 
+import android.app.AlertDialog
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +10,10 @@ import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
 import androidx.fragment.app.viewModels
 import androidx.viewbinding.ViewBinding
+import com.osman.studentqr.R
+import com.osman.studentqr.common.LoadingDialog
 import com.osman.studentqr.databinding.FragmentNewLessonBinding
+import com.osman.studentqr.presentation.activity.MainActivity
 import com.osman.studentqr.presentation.binding_adapter.BindingFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -20,15 +24,26 @@ class NewLessonFragment : BindingFragment<FragmentNewLessonBinding>() {
         get() = FragmentNewLessonBinding::inflate
 
     private val viewModel: NewLessonViewModel by viewModels()
+    private var loadingDialog: LoadingDialog? = null
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        loadingDialog = LoadingDialog(activity as MainActivity)
         createNewLesson()
 
-        viewModel.isAddLessonSuccessful.observe(viewLifecycleOwner){
-            if(it){
+        viewModel.isAddLessonSuccessful.observe(viewLifecycleOwner) {
+            if (it) {
                 Toast.makeText(activity, "Ders Başarıyla Kaydedildi", Toast.LENGTH_SHORT).show()
                 startQrScanner()
+            }
+        }
+
+        viewModel.isLoading.observe(viewLifecycleOwner) {
+            if (it) {
+                loadingDialog?.startLoadingDialog()
+            } else {
+                loadingDialog?.dismissDialog()
             }
         }
     }

@@ -8,7 +8,7 @@
     android:background="@drawable/custom_lesson_item_background">
 
     <TextView
-        android:id="@+id/coin_name_textview"
+        android:id="@+id/lesson_name_textview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -25,7 +25,7 @@
         tools:text="Gömülü Sistemler" />
 
     <TextView
-        android:id="@+id/coin_id_textiew"
+        android:id="@+id/lesson_attempt_count"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -34,12 +34,12 @@
         android:textSize="12sp"
         android:textStyle="italic"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/coin_name_textview"
-        app:layout_constraintTop_toBottomOf="@+id/coin_name_textview"
+        app:layout_constraintStart_toStartOf="@+id/lesson_name_textview"
+        app:layout_constraintTop_toBottomOf="@+id/lesson_name_textview"
         tools:text="Katılan Öğrenci Sayısı : 24" />
 
     <TextView
-        android:id="@+id/coin_symbol_textview"
+        android:id="@+id/lesson_teacher_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -51,7 +51,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/coin_id_textiew"
+        app:layout_constraintStart_toStartOf="@+id/lesson_attempt_count"
         app:layout_constraintTop_toBottomOf="@+id/imageView"
         tools:text="Yavuz Canbay" />
 
@@ -65,6 +65,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/coin_id_textiew" />
+        app:layout_constraintTop_toBottomOf="@+id/lesson_attempt_count" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -49,8 +49,9 @@ class AuthenticationActivity : AppCompatActivity(), View.OnClickListener {
         clickedView.setBackgroundResource(R.drawable.button_background_selected)
     }
 
-    fun startMainActivity() {
+    fun startMainActivity(isStudent: Boolean) {
         val intent = Intent(this, MainActivity::class.java)
+        intent.putExtra("isStudent", isStudent)
         startActivity(intent)
         finish()
     }

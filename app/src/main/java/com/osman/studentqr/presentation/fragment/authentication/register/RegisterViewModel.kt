@@ -20,6 +20,10 @@ class RegisterViewModel @Inject constructor(
 
     val isUserVerified = MutableLiveData<Boolean>(false)
 
+    init {
+        checkIfUserVerified()
+    }
+
     fun checkIfUserVerified() {
         viewModelScope.launch {
             firebaseRepository.checkIfVerified {

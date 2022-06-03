@@ -17,8 +17,10 @@ class NewLessonViewModel @Inject constructor(
 ) : ViewModel() {
     val isAddLessonSuccessful = MutableLiveData<Boolean>()
     val qrValue = MutableLiveData<String>()
+    val isLoading = MutableLiveData<Boolean>()
 
     fun addLesson(lessonName: String) {
+        isLoading.value = true
         val qr = createUUID()
         qrValue.value = qr
         viewModelScope.launch(Dispatchers.IO) {
@@ -44,6 +46,7 @@ class NewLessonViewModel @Inject constructor(
                 listOfStudents = mutableListOf()
             )
             repository.createNewLesson(lesson) {
+                isLoading.value = false
                 isAddLessonSuccessful.value = it
             }
         }

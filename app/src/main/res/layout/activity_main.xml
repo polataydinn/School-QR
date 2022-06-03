@@ -8,7 +8,6 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/main_container_view"
-        android:name="com.osman.studentqr.presentation.fragment.teacher.TeacherFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBaseline_toBottomOf="parent"

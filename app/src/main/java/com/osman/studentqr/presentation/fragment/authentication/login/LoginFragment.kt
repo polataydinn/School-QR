@@ -49,9 +49,14 @@ class LoginFragment : BindingFragment<FragmentLoginBinding>() {
         }
 
         viewModel.isUserVerified.observe(viewLifecycleOwner) {
-            if (FirebaseAuth.getInstance().currentUser?.email != null) {
+            val email = FirebaseAuth.getInstance().currentUser?.email
+            if (email != null) {
                 if (it) {
-                    (activity as AuthenticationActivity).startMainActivity()
+                    if (email.contains("@ogr.ksu.edu.tr")) {
+                        (activity as AuthenticationActivity).startMainActivity(true)
+                    } else {
+                        (activity as AuthenticationActivity).startMainActivity(false)
+                    }
                 } else {
                     val mail = FirebaseAuth.getInstance().currentUser?.email
                     Toast.makeText(
