@@ -17,13 +17,9 @@ class StudentViewModel @Inject constructor(
     val listOfLessons = MutableLiveData<List<Lesson>>()
     val isEmpty = MutableLiveData<Boolean>()
 
-    init {
-        listOfLessonsStudentAttempted()
-    }
-
-    fun listOfLessonsStudentAttempted(){
+    fun listOfLessonsStudentAttempted(lesson: Lesson){
         viewModelScope.launch {
-            repository.listOfLessonsStudentAttempted{
+            repository.listOfLessonsStudentAttempted(lesson){
                 if (it.isEmpty()){
                     isEmpty.value = true
                 }else{

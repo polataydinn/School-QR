@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "574646096479",
-    "project_id": "studentqr-91ec1",
-    "storage_bucket": "studentqr-91ec1.appspot.com"
+    "project_number": "161409047769",
+    "project_id": "scholl-qr",
+    "storage_bucket": "scholl-qr.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:574646096479:android:2d6d1b7e32f7d92353c1ea",
+        "mobilesdk_app_id": "1:161409047769:android:4600bc933784ba2c1f72c8",
         "android_client_info": {
           "package_name": "com.osman.studentqr"
         }
       },
       "oauth_client": [
         {
-          "client_id": "574646096479-qh8vl6e6sr31bv8fkfii0sc8m8e5pk13.apps.googleusercontent.com",
+          "client_id": "161409047769-l3gnptf5mni1ibvoutijd6rgjt582esm.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD2ISIga_Hgb9bMl7YXEt_Pa9LWSCwS5Tw"
+          "current_key": "AIzaSyB7A24ppM_myYCvRv3vhe3oDkZmJp-JHoo"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "574646096479-qh8vl6e6sr31bv8fkfii0sc8m8e5pk13.apps.googleusercontent.com",
+              "client_id": "161409047769-l3gnptf5mni1ibvoutijd6rgjt582esm.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

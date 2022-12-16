@@ -52,26 +52,25 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     //Firebase implementation
-    implementation 'com.google.firebase:firebase-auth-ktx:21.0.5'
+    implementation 'com.google.firebase:firebase-auth-ktx:21.1.0'
     implementation platform('com.google.firebase:firebase-bom:28.4.2')
     //SplashApi
-    implementation 'androidx.core:core-splashscreen:1.0.0-rc01'
+    implementation 'androidx.core:core-splashscreen:1.0.0'
 
     //Dagger - Hilt
-    implementation "com.google.dagger:hilt-android:2.38.1"
-    kapt "com.google.dagger:hilt-android-compiler:2.37"
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
+    implementation "com.google.dagger:hilt-android:2.42"
+    kapt "com.google.dagger:hilt-android-compiler:2.42"
     annotationProcessor "com.google.dagger:dagger-android-processor:2.16"
     kapt "androidx.hilt:hilt-compiler:1.0.0"
 
     //Lifecycle Components
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.1"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1"
 
     //Navigation
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.4.2'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.4.2'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
 
     //QR
     implementation 'com.budiyev.android:code-scanner:2.1.0'

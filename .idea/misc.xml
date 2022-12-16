@@ -3,6 +3,15 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/dcc/AndroidStudioProjects/School-QR/app/src/main/res/drawable/custom_lesson_item_background.xml" value="0.2985" />
+        <entry key="..\:/Users/dcc/AndroidStudioProjects/School-QR/app/src/main/res/drawable/custom_lesson_item_gray_background.xml" value="0.2985" />
+        <entry key="..\:/Users/dcc/AndroidStudioProjects/School-QR/app/src/main/res/layout/custom_lesson_item.xml" value="0.33" />
+        <entry key="..\:/Users/dcc/AndroidStudioProjects/School-QR/app/src/main/res/layout/custom_qr_dialog.xml" value="0.29907407407407405" />
+        <entry key="..\:/Users/dcc/AndroidStudioProjects/School-QR/app/src/main/res/layout/fragment_lesson_detail.xml" value="0.33" />
+        <entry key="..\:/Users/dcc/AndroidStudioProjects/School-QR/app/src/main/res/layout/fragment_new_lesson.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/dcc/AndroidStudioProjects/School-QR/app/src/main/res/layout/fragment_teacher.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/dcc/AndroidStudioProjects/School-QR/app/src/main/res/layout/fragment_teacher_lesson_list.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/dcc/AndroidStudioProjects/School-QR/app/src/main/res/layout/row_lessons_item.xml" value="0.36666666666666664" />
         <entry key="app/src/main/res/drawable/button_background.xml" value="0.2215" />
         <entry key="app/src/main/res/drawable/button_ui_background.xml" value="0.2215" />
         <entry key="app/src/main/res/drawable/custom_lesson_item_background.xml" value="0.2215" />

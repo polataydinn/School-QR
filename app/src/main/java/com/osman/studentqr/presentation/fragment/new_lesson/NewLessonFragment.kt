@@ -35,7 +35,6 @@ class NewLessonFragment : BindingFragment<FragmentNewLessonBinding>() {
         viewModel.isAddLessonSuccessful.observe(viewLifecycleOwner) {
             if (it) {
                 Toast.makeText(activity, "Ders Başarıyla Kaydedildi", Toast.LENGTH_SHORT).show()
-                startQrScanner()
             }
         }
 

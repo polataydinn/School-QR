@@ -22,6 +22,8 @@ class StudentFragment : BindingFragment<FragmentStudentBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val lesson = (activity as MainActivity).lesson
+        lesson?.let { viewModel.listOfLessonsStudentAttempted(it) }
         listeners()
         configureRecyclerView()
         observeListAndEmpty()

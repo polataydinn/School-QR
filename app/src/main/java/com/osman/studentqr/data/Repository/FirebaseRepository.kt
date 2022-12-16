@@ -1,5 +1,6 @@
 package com.osman.studentqr.data.Repository
 
+import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -10,6 +11,8 @@ import com.osman.studentqr.common.toUserName
 import com.osman.studentqr.data.model.Lesson
 import com.osman.studentqr.data.model.Student
 import com.osman.studentqr.data.model.Teacher
+import com.osman.studentqr.data.model.TeacherLesson
+import java.util.*
 
 class FirebaseRepository {
     suspend fun login(email: String, password: String, onComplete: (Boolean) -> Unit) {
@@ -35,7 +38,7 @@ class FirebaseRepository {
     }
 
     suspend fun sendVerification(onComplete: (Boolean) -> Unit) {
-        FirebaseAuth.getInstance().currentUser!!.sendEmailVerification().addOnCompleteListener {
+        FirebaseAuth.getInstance().currentUser?.sendEmailVerification()?.addOnCompleteListener {
             if (it.isSuccessful) {
                 onComplete(true)
             } else {
@@ -80,7 +83,7 @@ class FirebaseRepository {
         }
     }
 
-    suspend fun createNewLesson(lesson: Lesson, completeEvent: (Boolean) -> Unit) {
+    suspend fun createNewLesson(lesson: TeacherLesson, completeEvent: (Boolean) -> Unit) {
         Firebase.database.reference.child("lessons")
             .child(System.currentTimeMillis().toString()).setValue(lesson)
             .addOnCompleteListener {
@@ -120,43 +123,58 @@ class FirebaseRepository {
             }
     }
 
-    suspend fun getTeacherLessons(completeEvent: (List<Lesson>) -> Unit) {
+    suspend fun getTeacherLessons(completeEvent: (List<TeacherLesson>) -> Unit) {
         Firebase.database.reference.child("lessons")
             .addValueEventListener(object : ValueEventListener {
                 override fun onCancelled(p0: DatabaseError) {
-
+                    println("Brekpoint")
                 }
 
                 override fun onDataChange(p0: DataSnapshot) {
-                    val lessons = mutableListOf<Lesson>()
-                    val listOfStudents = mutableListOf<Student>()
+                    val lessons = mutableListOf<TeacherLesson>()
                     p0.children.forEach {
-                        if (it.child("listOfStudents").value == null) {
-                            val item: Lesson? = it.getValue(Lesson::class.java)
+                        /*if (it.child("listOfStudents").value == null) {
+                            val item: TeacherLesson? = it.getValue(TeacherLesson::class.java)
                             item?.let { lesson ->
-                                if (lesson.teacher?.teacherMail == FirebaseAuth.getInstance().currentUser!!.email!!) {
+                                val teacherName =
+                                    lesson.listOfLessons?.firstOrNull { teacher -> teacher.teacher?.teacherName?.isNotEmpty() == true }
+                                if (teacherName?.teacher?.teacherMail == FirebaseAuth.getInstance().currentUser!!.email!!) {
                                     lessons.add(lesson)
                                 }
                             }
-                        } else {
-                            it.child("listOfStudents").children.forEach {
-                                val item: Student? = it.getValue(Student::class.java)
+                        }else {*/
+                        val listOfLessons = mutableListOf<Lesson>()
+                        it.child("listOfLessons").children.forEach { mLesson ->
+                            val listOfStudents = mutableListOf<Student>()
+                            mLesson.child("listOfStudents").children.forEach { mListOfStudents ->
+                                val item: Student? = mListOfStudents.getValue(Student::class.java)
                                 item?.let { student ->
                                     listOfStudents.add(student)
                                 }
                             }
-                            val lessonUUID = it.child("lessonUUID").getValue(String::class.java)
-                            val lessonName = it.child("lessonName").getValue(String::class.java)
-                            val teacher = it.child("teacher").getValue(Teacher::class.java)
+                            val lessonUUID =
+                                mLesson.child("lessonUUID").getValue(String::class.java)
+                            val lessonName =
+                                mLesson.child("lessonName").getValue(String::class.java)
+                            val teacher = mLesson.child("teacher").getValue(Teacher::class.java)
+                            val isOnline =
+                                mLesson.child("lessonOnline").getValue(Boolean::class.java)
                             val lesson = Lesson(
-                                listOfStudents,
-                                lessonUUID,
-                                lessonName,
-                                teacher
+                                listOfStudents = listOfStudents,
+                                lessonUUID = lessonUUID,
+                                lessonName = lessonName,
+                                isLessonOnline = isOnline,
+                                teacher = teacher
                             )
-                            lessons.add(lesson)
+                            listOfLessons.add(lesson)
                         }
-
+                        val teacherName = it.child("lessonName").getValue(String::class.java)
+                        val teacherLesson = TeacherLesson(
+                            lessonName = teacherName,
+                            listOfLessons = listOfLessons,
+                        )
+                        lessons.add(teacherLesson)
+                        //}
                     }
                     completeEvent(lessons.asReversed())
                 }
@@ -232,7 +250,7 @@ class FirebaseRepository {
             })
     }
 
-    suspend fun listOfLessonsStudentAttempted(omComplete: (List<Lesson>) -> Unit) {
+    suspend fun listOfLessonsStudentAttempted(lesson: Lesson, onComplete: (List<Lesson>) -> Unit) {
         Firebase.database.reference.child("lessons")
             .addValueEventListener(object : ValueEventListener {
 
@@ -242,48 +260,59 @@ class FirebaseRepository {
                 override fun onDataChange(p0: DataSnapshot) {
                     val listOfLessons = mutableListOf<Lesson>()
                     val listOfStudents = mutableListOf<Student>()
-                    p0.children.forEach {
-                        it.child("listOfStudents").children.forEach { student ->
-                            val item: Student? = student.getValue(Student::class.java)
-                            if (item?.studentMail == FirebaseAuth.getInstance().currentUser!!.email!!) {
-                                val lessonUUID = it.child("lessonUUID").getValue(String::class.java)
-                                val lessonName = it.child("lessonName").getValue(String::class.java)
-                                val teacher = it.child("teacher").getValue(Teacher::class.java)
+                    p0.children.forEach { mLesson ->
+                        mLesson.child("listOfLessons").children.forEach { week ->
+                            week.child("listOfStudents").children.forEach { student ->
+                                val item: Student? = student.getValue(Student::class.java)
+                                if (item?.studentMail == FirebaseAuth.getInstance().currentUser!!.email!!) {
+                                    val lessonUUID =
+                                        week.child("lessonUUID").getValue(String::class.java)
+                                    val lessonName =
+                                        week.child("lessonName").getValue(String::class.java)
+                                    val teacher =
+                                        week.child("teacher").getValue(Teacher::class.java)
 
-                                val lesson = it.child("listOfStudents").children.map {
-                                    val item: Student = it.getValue(Student::class.java)!!
-                                    item
-                                }.toList().let { students ->
-                                    Lesson(
-                                        listOfStudents = students,
-                                        lessonUUID = lessonUUID,
-                                        lessonName = lessonName,
-                                        teacher = teacher
-                                    )
+                                    val tempLesson = week.child("listOfStudents").children.map {
+                                        val mItem: Student = week.getValue(Student::class.java)!!
+                                        mItem
+                                    }.toList().let { students ->
+                                        Lesson(
+                                            listOfStudents = students,
+                                            lessonUUID = lessonUUID,
+                                            lessonName = lessonName,
+                                            teacher = teacher
+                                        )
+                                    }
+                                    tempLesson.let { tLesson -> listOfLessons.add(tLesson) }
                                 }
-                                lesson?.let { mLesson -> listOfLessons.add(mLesson) }
                             }
                         }
+                        onComplete(listOfLessons)
                     }
-                    omComplete(listOfLessons)
                 }
             })
     }
 
-    fun addStudentToLesson(uuid: String, student: Student, completeEvent: (Boolean) -> Unit) {
+    private fun addStudentToLesson(
+        uuid: String,
+        student: Student,
+        completeEvent: (Boolean) -> Unit
+    ) {
         Firebase.database.reference.child("lessons")
             .get().addOnCompleteListener {
                 var isSuccess = false
                 if (it.isSuccessful) {
-                    it.result!!.children.forEach {
-                        if (it.child("lessonUUID").getValue(String::class.java) == uuid) {
-                            isSuccess = true
-                            student.studentNumber?.let { studentNumber ->
-                                it.ref.child("listOfStudents").child(
-                                    studentNumber
-                                ).setValue(student)
+                    it.result!!.children.forEach { mLesson ->
+                        mLesson.child("listOfLessons").children.forEach { week ->
+                            if (week.getValue(Lesson::class.java)?.lessonUUID == uuid) {
+                                isSuccess = true
+                                student.studentNumber?.let { studentNumber ->
+                                    week.ref.child("listOfStudents").child(
+                                        studentNumber
+                                    ).setValue(student)
+                                }
+                                completeEvent(true)
                             }
-                            completeEvent(true)
                         }
                     }
                     if (!isSuccess) {
@@ -291,6 +320,76 @@ class FirebaseRepository {
                     }
                 }
 
+            }
+    }
+
+    fun setIsCheckedStatus(lesson: Lesson, checked: Boolean, position: Int) {
+        Firebase.database.reference.child("lessons")
+            .get().addOnCompleteListener {
+                if (it.isSuccessful) {
+                    it.result.children.forEach { mLesson ->
+                        if (mLesson.child("lessonName")
+                                .getValue(String::class.java) == lesson.lessonName
+                        ) {
+                            val listOfStudents = mutableListOf<Student>()
+                            mLesson.child("listOfLessons").children.forEach { week ->
+                                week.child("listOfStudents").children.forEach {
+                                    val item: Student? = week.getValue(Student::class.java)
+                                    item?.let { student ->
+                                        listOfStudents.add(student)
+                                    }
+                                }
+                                val lessonUUID =
+                                    week.child("lessonUUID").getValue(String::class.java)
+                                val lessonName =
+                                    week.child("lessonName").getValue(String::class.java)
+                                val teacher = week.child("teacher").getValue(Teacher::class.java)
+                                val lLesson = Lesson(
+                                    listOfStudents,
+                                    lessonUUID,
+                                    lessonName,
+                                    teacher
+                                )
+                                if (lLesson.lessonUUID == lesson.lessonUUID) {
+                                    lLesson.isLessonOnline = checked
+                                    week.ref.setValue(lLesson)
+                                }
+                                listOfStudents.clear()
+                            }
+                        }
+                    }
+                }
+            }
+    }
+
+    suspend fun changeQrParameter(
+        lesson: Lesson,
+        randomUUID: String,
+        onComplete: (Boolean) -> Unit
+    ) {
+        Firebase.database.reference.child("lessons")
+            .get().addOnCompleteListener {
+                if (it.isSuccessful) {
+                    it.result.children.forEach { mLesson ->
+                        if (mLesson.child("lessonName")
+                                .getValue(String::class.java) == lesson.lessonName
+                        ) {
+                            mLesson.child("listOfLessons").children.forEach { week ->
+
+                                val lessonUUID =
+                                    week.child("lessonUUID").getValue(String::class.java)
+                                if (lessonUUID == lesson.lessonUUID)
+                                week.ref.child("lessonUUID").setValue(randomUUID).addOnCompleteListener { result ->
+                                    if (result.isSuccessful) {
+                                        onComplete.invoke(true)
+                                    } else {
+                                        onComplete.invoke(false)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
     }
 }

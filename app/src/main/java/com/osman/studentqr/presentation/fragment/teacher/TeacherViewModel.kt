@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.osman.studentqr.data.Repository.FirebaseRepository
 import com.osman.studentqr.data.model.Lesson
+import com.osman.studentqr.data.model.TeacherLesson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -14,14 +15,15 @@ class TeacherViewModel @Inject constructor(
     private val repository: FirebaseRepository
 ) : ViewModel() {
     val isLoading = MutableLiveData<Boolean>(true)
-    val teacherLessonsList = MutableLiveData<List<Lesson>>()
+    val teacherLessonsList = MutableLiveData<List<TeacherLesson>>()
     val isEmpty = MutableLiveData<Boolean>(false)
+    val currentPosition = MutableLiveData<Int>(0)
 
     init {
         getTeacherLessons()
     }
 
-    fun getTeacherLessons() {
+    private fun getTeacherLessons() {
         viewModelScope.launch {
             repository.getTeacherLessons{
                 isLoading.value = false

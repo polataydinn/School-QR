@@ -1,12 +1,15 @@
 package com.osman.studentqr.presentation.fragment.lesson_detail
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
@@ -28,32 +31,69 @@ class LessonDetailFragment : BindingFragment<FragmentLessonDetailBinding>() {
     private val viewModel: LessonDetailViewModel by viewModels()
     private var lesson: Lesson? = Lesson()
     private val adapter: LessonDetailAdapter by lazy { LessonDetailAdapter() }
+    private var dialogView: View? = null
+    private var builder: AlertDialog.Builder? = null
+    private var timerTextView: TextView? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setDialog()
         lesson = (activity as MainActivity).lesson
+        lesson?.let {
+            viewModel.lesson = it
+        }
         lesson?.lessonUUID?.let { viewModel.getListOfStudents(it) }
         configureRecyclerView()
         uiEvents()
         observeStudentList()
         observeRemoveEvent()
+        observeQrStatus()
+    }
+
+    private fun setDialog() {
+        builder = AlertDialog.Builder(activity)
+        val inflater = (activity as MainActivity).layoutInflater
+        dialogView = inflater.inflate(R.layout.custom_qr_dialog, null)
+        timerTextView = dialogView!!.findViewById(R.id.dialog_timer_text)
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun observeQrStatus() {
+        viewModel.randomLessonUUID.observe(viewLifecycleOwner) {
+            if (it.isNotEmpty()){
+                (activity as MainActivity).lesson?.lessonUUID = it
+            }
+            if (dialogView?.isShown == true) {
+                updateDialog()
+            }
+        }
+        viewModel.setTimer.observe(viewLifecycleOwner) {
+            if (dialogView?.isShown == true) {
+                timerTextView?.text = "$it saniye"
+            }
+        }
     }
 
     private fun configureRecyclerView() {
         binding.lessonDetailAttemptsRecylerView.adapter = adapter
     }
 
+    @SuppressLint("SetTextI18n")
     private fun uiEvents() {
         binding.lessonDetailTitle.text = lesson?.lessonName
         binding.lessonDetailAttempts.text =
             "Katılımcı Sayısı : " + lesson?.listOfStudents?.size.toString()
-
+        binding.lessonDetailMakeLessonOnline.isChecked = lesson?.isLessonOnline ?: false
         binding.lessonDetailQrCodeButton.setOnClickListener {
             createQrCodeDialog()
         }
 
         binding.lessonDetailRemoveButton.setOnClickListener {
             createRemoveDialog()
+        }
+        binding.lessonDetailMakeLessonOnline.setOnCheckedChangeListener { _, isChecked ->
+            val position = (activity as MainActivity).lessonPosition
+            viewModel.setOnlineStatus(lesson, isChecked, position)
         }
     }
 
@@ -91,18 +131,46 @@ class LessonDetailFragment : BindingFragment<FragmentLessonDetailBinding>() {
         builder.create().show()
     }
 
-    fun createQrCodeDialog() {
-        val builder: AlertDialog.Builder = AlertDialog.Builder(activity)
-        val inflater = (activity as MainActivity).layoutInflater
-        val dialogView: View = inflater.inflate(R.layout.custom_qr_dialog, null)
-        val qrImage = dialogView.findViewById<ImageView>(R.id.dialog_qr_image)
-
-        val qrgEncoder = QRGEncoder(lesson?.lessonUUID, null, QRGContents.Type.TEXT, 1000)
-        val qrBit: Bitmap = qrgEncoder.getBitmap()
+    private fun createQrCodeDialog() {
+        if (dialogView == null) {
+            return
+        }
+        viewModel.timer.cancel()
+        viewModel.startTimer()
+        val qrImage = dialogView!!.findViewById<ImageView>(R.id.dialog_qr_image)
+        var qr: String? = ""
+        qr = if (viewModel.randomLessonUUID.value?.isNotEmpty() == true) {
+            viewModel.randomLessonUUID.value
+        } else {
+            lesson?.lessonUUID
+        }
+        val qrgEncoder = QRGEncoder(qr, null, QRGContents.Type.TEXT, 1000)
+        if (qrgEncoder.bitmap == null) {
+            return
+        }
+        val qrBit: Bitmap = qrgEncoder.bitmap
         qrImage.setImageBitmap(qrBit)
+        if (dialogView!!.parent != null){
+            (dialogView!!.parent as ViewGroup).removeView(dialogView)
+        }
+        builder?.setView(dialogView)
+            ?.setPositiveButton("Tamam",
+                DialogInterface.OnClickListener { dialog, which -> })?.create()?.show()
+    }
 
-        builder.setView(dialogView)
-            .setPositiveButton("Tamam",
-                DialogInterface.OnClickListener { dialog, which -> }).create().show()
+    private fun updateDialog() {
+        val qrImage = dialogView!!.findViewById<ImageView>(R.id.dialog_qr_image)
+        var qr: String? = ""
+        qr = if (viewModel.randomLessonUUID.value?.isNotEmpty() == true) {
+            viewModel.randomLessonUUID.value
+        } else {
+            lesson?.lessonUUID
+        }
+        val qrgEncoder = QRGEncoder(qr, null, QRGContents.Type.TEXT, 1000)
+        if (qrgEncoder.bitmap == null) {
+            return
+        }
+        val qrBit: Bitmap = qrgEncoder.bitmap
+        qrImage.setImageBitmap(qrBit)
     }
 }

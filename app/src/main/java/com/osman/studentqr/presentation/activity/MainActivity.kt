@@ -15,6 +15,7 @@ import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.osman.studentqr.R
 import com.osman.studentqr.data.model.Lesson
+import com.osman.studentqr.data.model.TeacherLesson
 import com.osman.studentqr.presentation.fragment.qr_scanner.QrScannerFragment
 import com.osman.studentqr.presentation.fragment.student.StudentFragment
 import com.osman.studentqr.presentation.fragment.teacher.TeacherFragment
@@ -23,6 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     var lesson: Lesson? = Lesson()
+    var lessonPosition: Int = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
