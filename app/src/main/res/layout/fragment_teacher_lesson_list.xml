@@ -6,6 +6,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".presentation.fragment.teacher.TeacherLessonListFragment">
 
+    <LinearLayout
+        android:id="@+id/teacher_lesson_create_document_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="#17D81B60"
+        android:padding="8dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_document"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:layout_gravity="center"
+            android:layout_marginStart="16dp"
+            android:text="@string/create_document"/>
+    </LinearLayout>
+
+
     <ProgressBar
         android:id="@+id/teacher_week_loading_progress_bar"
         android:layout_width="wrap_content"
@@ -14,7 +40,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/teacher_week_empty_image"
@@ -30,17 +56,17 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/teacher_week_lessons_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:itemCount="10"
-        android:layout_marginTop="16dp"
+        android:layout_height="0dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/row_lessons_item"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/teacher_lesson_create_document_button"
+        tools:itemCount="10"
+        tools:listitem="@layout/row_lessons_item" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -37,7 +37,7 @@ class TeacherLessonsAdapter : ListAdapter<Lesson, TeacherLessonsViewHolder>(COIN
                 oldItem: Lesson,
                 newItem: Lesson
             ): Boolean {
-                return oldItem.lessonUUID == newItem.lessonUUID
+                return oldItem.lessonWeek == newItem.lessonWeek
             }
 
             override fun areContentsTheSame(

@@ -9,5 +9,6 @@ data class Lesson (
     var lessonName: String? = "",
     var teacher: Teacher? = Teacher(),
     var isLessonOnline: Boolean? = false,
-    var lessonWeek: String? = ""
+    var lessonWeek: String? = "",
+    var isLessonActivated: Boolean? = false
 )

@@ -32,9 +32,9 @@ class TeacherFragment : BindingFragment<FragmentTeacherBinding>() {
     private fun configureAdapter() {
         binding.teacherLessonsRecyclerView.adapter = adapter
 
-        adapter.onItemClick = { _, position ->
+        adapter.onItemClick = { teacher, position ->
             (activity as MainActivity).apply {
-                viewModel.currentPosition.value = position
+                this.position = position
                 loadFragment(TeacherLessonListFragment())
             }
         }

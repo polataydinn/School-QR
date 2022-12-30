@@ -5,7 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.osman.studentqr.data.Repository.FirebaseRepository
 import com.osman.studentqr.data.model.Lesson
+import com.osman.studentqr.data.model.TeacherLesson
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -14,8 +16,10 @@ class StudentViewModel @Inject constructor(
     private val repository: FirebaseRepository
 ) : ViewModel() {
 
-    val listOfLessons = MutableLiveData<List<Lesson>>()
+    val listOfLessons = MutableLiveData<List<TeacherLesson>>()
     val isEmpty = MutableLiveData<Boolean>()
+
+    val totalNonattendance = MutableLiveData<Int>()
 
     fun listOfLessonsStudentAttempted(lesson: Lesson){
         viewModelScope.launch {
@@ -26,6 +30,14 @@ class StudentViewModel @Inject constructor(
                     isEmpty.value = false
                     listOfLessons.value = it
                 }
+            }
+        }
+    }
+
+    fun getTotalNonattendance(lessonName: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getUsersAllLesson(lessonName){
+                totalNonattendance.postValue(it)
             }
         }
     }

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.osman.studentqr.databinding.FragmentTeacherLessonListBinding
 import com.osman.studentqr.presentation.activity.MainActivity
@@ -12,6 +13,8 @@ import com.osman.studentqr.presentation.binding_adapter.BindingFragment
 import com.osman.studentqr.presentation.fragment.lesson_detail.LessonDetailFragment
 import com.osman.studentqr.presentation.fragment.teacher.adapter.TeacherLessonsAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class TeacherLessonListFragment : BindingFragment<FragmentTeacherLessonListBinding>() {
@@ -26,8 +29,9 @@ class TeacherLessonListFragment : BindingFragment<FragmentTeacherLessonListBindi
         super.onViewCreated(view, savedInstanceState)
         setRecyclerView()
         observeLoadingAndEmpty()
-        viewModel.teacherLessonsList.observe(viewLifecycleOwner){
-            adapter.submitList(viewModel.currentPosition.value?.let { position -> it[position].listOfLessons })
+        viewModel.teacherLessonsList.observe(viewLifecycleOwner) {
+            val position = (activity as MainActivity).position
+            adapter.submitList(position?.let { it1 -> it[it1].listOfLessons })
         }
 
         adapter.onItemClick = { mLesson, position ->
@@ -35,6 +39,28 @@ class TeacherLessonListFragment : BindingFragment<FragmentTeacherLessonListBindi
                 lesson = mLesson
                 lessonPosition = position
                 loadFragment(LessonDetailFragment())
+            }
+        }
+
+        binding.teacherLessonCreateDocumentButton.setOnClickListener {
+            val position = (activity as MainActivity).position
+            val lessonKey =
+                position?.let { it1 -> viewModel.teacherLessonsList.value?.get(it1)?.teacherKey }
+            val lessonName =
+                position?.let { it1 -> viewModel.teacherLessonsList.value?.get(it1)?.lessonName }
+            lifecycleScope.launch(Dispatchers.IO) {
+                val reportList =
+                    lessonKey?.let { mLessonName -> viewModel.getReportDocument(mLessonName) }
+                (activity as MainActivity).apply {
+                    reportList?.let { mReportList ->
+                        lessonName?.let { mLessonName ->
+                            createPdf(
+                                mReportList,
+                                mLessonName
+                            )
+                        }
+                    }
+                }
             }
         }
 

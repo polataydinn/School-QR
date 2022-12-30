@@ -9,6 +9,7 @@ import androidx.viewbinding.ViewBinding
 import com.osman.studentqr.databinding.FragmentStudentBinding
 import com.osman.studentqr.presentation.activity.MainActivity
 import com.osman.studentqr.presentation.binding_adapter.BindingFragment
+import com.osman.studentqr.presentation.fragment.teacher.adapter.TeacherLessonListAdapter
 import com.osman.studentqr.presentation.fragment.teacher.adapter.TeacherLessonsAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -18,7 +19,7 @@ class StudentFragment : BindingFragment<FragmentStudentBinding>() {
         get() = FragmentStudentBinding::inflate
 
     private val viewModel: StudentViewModel by viewModels()
-    private val adapter: TeacherLessonsAdapter by lazy { TeacherLessonsAdapter() }
+    private val adapter: TeacherLessonListAdapter by lazy { TeacherLessonListAdapter() }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -31,6 +32,13 @@ class StudentFragment : BindingFragment<FragmentStudentBinding>() {
 
     private fun configureRecyclerView() {
         binding.studentLessonListRecylerView.adapter = adapter
+
+        adapter.onItemClick = { item, _ ->
+            (activity as MainActivity).apply {
+                teacherLesson = item
+                loadFragment(StudentWeekFragment())
+            }
+        }
     }
 
     private fun observeListAndEmpty() {

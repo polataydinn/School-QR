@@ -13,6 +13,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.viewbinding.ViewBinding
 import com.osman.studentqr.R
@@ -62,6 +63,7 @@ class LessonDetailFragment : BindingFragment<FragmentLessonDetailBinding>() {
         viewModel.randomLessonUUID.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()){
                 (activity as MainActivity).lesson?.lessonUUID = it
+                viewModel.getListOfStudents(it)
             }
             if (dialogView?.isShown == true) {
                 updateDialog()
@@ -83,17 +85,18 @@ class LessonDetailFragment : BindingFragment<FragmentLessonDetailBinding>() {
         binding.lessonDetailTitle.text = lesson?.lessonName
         binding.lessonDetailAttempts.text =
             "Katılımcı Sayısı : " + lesson?.listOfStudents?.size.toString()
-        binding.lessonDetailMakeLessonOnline.isChecked = lesson?.isLessonOnline ?: false
-        binding.lessonDetailQrCodeButton.setOnClickListener {
+        binding.lessonDetailQrMakeLessonOnline.isChecked = lesson?.isLessonOnline ?: false
+        if (lesson?.isLessonOnline == false){
+            binding.lessonDetailQrButton.visibility = View.INVISIBLE
+        }
+        binding.lessonDetailQrButton.setOnClickListener {
             createQrCodeDialog()
         }
 
-        binding.lessonDetailRemoveButton.setOnClickListener {
-            createRemoveDialog()
-        }
-        binding.lessonDetailMakeLessonOnline.setOnCheckedChangeListener { _, isChecked ->
+        binding.lessonDetailQrMakeLessonOnline.setOnCheckedChangeListener { _, isChecked ->
             val position = (activity as MainActivity).lessonPosition
             viewModel.setOnlineStatus(lesson, isChecked, position)
+            binding.lessonDetailQrButton.isVisible = isChecked
         }
     }
 

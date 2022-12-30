@@ -5,8 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.osman.studentqr.data.Repository.FirebaseRepository
 import com.osman.studentqr.data.model.Lesson
+import com.osman.studentqr.data.model.ReportData
 import com.osman.studentqr.data.model.TeacherLesson
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,10 +19,15 @@ class TeacherViewModel @Inject constructor(
     val isLoading = MutableLiveData<Boolean>(true)
     val teacherLessonsList = MutableLiveData<List<TeacherLesson>>()
     val isEmpty = MutableLiveData<Boolean>(false)
-    val currentPosition = MutableLiveData<Int>(0)
+    val currentPosition = MutableLiveData<Int>()
 
     init {
         getTeacherLessons()
+    }
+
+    suspend fun getReportDocument(lessonName: String) : List<ReportData>{
+           return  repository.createLessonReport(lessonName)
+
     }
 
     private fun getTeacherLessons() {

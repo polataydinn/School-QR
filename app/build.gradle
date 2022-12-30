@@ -78,4 +78,7 @@ dependencies {
 
     //Dexter
     implementation 'com.karumi:dexter:6.2.3'
+
+    //Pdf
+    implementation ("com.itextpdf:itextpdf:5.5.13.1")
 }

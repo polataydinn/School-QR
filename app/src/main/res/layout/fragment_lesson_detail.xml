@@ -16,7 +16,7 @@
         android:textColor="@color/black"
         android:textSize="22sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/lesson_detail_make_lesson_online"
+        app:layout_constraintEnd_toStartOf="@+id/lesson_detail_qr_button"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -32,42 +32,37 @@
         app:layout_constraintStart_toStartOf="@+id/lesson_detail_title"
         app:layout_constraintTop_toBottomOf="@+id/lesson_detail_title" />
 
-    <ImageView
-        android:id="@+id/lesson_detail_remove_button"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_marginEnd="16dp"
-        android:src="@drawable/ic_delete_black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/lesson_detail_title" />
 
     <ImageView
-        android:id="@+id/lesson_detail_qr_code_button"
+        android:id="@+id/lesson_detail_qr_button"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:layout_marginEnd="16dp"
         android:src="@drawable/ic_qr_code_black"
-        app:layout_constraintEnd_toStartOf="@+id/lesson_detail_remove_button"
-        app:layout_constraintTop_toTopOf="@+id/lesson_detail_remove_button" />
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/lesson_detail_qr_make_lesson_online"
+        app:layout_constraintEnd_toStartOf="@+id/lesson_detail_qr_make_lesson_online"
+        app:layout_constraintTop_toTopOf="@+id/lesson_detail_qr_make_lesson_online" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/lesson_detail_attempts_recyler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
-        tools:itemCount="10"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/row_lesson_detail_item"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/lesson_detail_remove_button"
+        app:layout_constraintEnd_toEndOf="@+id/lesson_detail_qr_make_lesson_online"
         app:layout_constraintStart_toStartOf="@+id/lesson_detail_attempts"
-        app:layout_constraintTop_toBottomOf="@+id/lesson_detail_attempts" />
+        app:layout_constraintTop_toBottomOf="@+id/lesson_detail_attempts"
+        tools:itemCount="10"
+        tools:listitem="@layout/row_lesson_detail_item" />
 
     <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/lesson_detail_make_lesson_online"
+        android:id="@+id/lesson_detail_qr_make_lesson_online"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/lesson_detail_qr_code_button"
-        app:layout_constraintEnd_toStartOf="@+id/lesson_detail_qr_code_button"
-        app:layout_constraintTop_toTopOf="@+id/lesson_detail_qr_code_button" />
+
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
