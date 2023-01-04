@@ -13,6 +13,10 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 class FirebaseRepository {
+    /*
+    Login olma işlemi yapar login başarılı olma durumunda true, hatalı olma durumunda ise
+    false değerini döner
+     */
     suspend fun login(email: String, password: String, onComplete: (Boolean) -> Unit) {
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
             .addOnCompleteListener {
@@ -24,6 +28,11 @@ class FirebaseRepository {
             }
     }
 
+
+    /*
+        Kayıt olma işlemi yapar kayıt başarılı olma durumunda true, hatalı olma durumunda ise
+        false değerini döner
+         */
     suspend fun register(email: String, password: String, onComplete: (Boolean) -> Unit) {
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener {
@@ -35,6 +44,10 @@ class FirebaseRepository {
             }
     }
 
+    /*
+    Kayıt olunan hesabın mail adresine doğrulama kodu gönderir, kod gönderme başarılı olma durumunda true, hatalı olma durumunda ise
+    false değerini döner
+     */
     suspend fun sendVerification(onComplete: (Boolean) -> Unit) {
         FirebaseAuth.getInstance().currentUser?.sendEmailVerification()?.addOnCompleteListener {
             if (it.isSuccessful) {
@@ -45,6 +58,10 @@ class FirebaseRepository {
         }
     }
 
+    /*
+    kayıt olunan kullanıcıların mail adresini doğrulayıp doğrulamadıklarını kontrol eder,
+    doğrulama başarılı olma durumunda true, hatalı olma durumunda ise false değerini döner
+     */
     suspend fun checkIfVerified(onComplete: (Boolean) -> Unit) {
         FirebaseAuth.getInstance().currentUser?.isEmailVerified.let {
             if (it != null && it) {
@@ -55,6 +72,10 @@ class FirebaseRepository {
         }
     }
 
+    /*
+    Kayıt olunan öğrenci ise kullanıcı bilgileri ile ekstra olarak veritabanındaki student tablosuna
+    da kaydı yapılır bu sayede kullanıcı bilgilerini (eposta, ogrenci no vs) almak daha da kolaylaşır
+     */
     suspend fun addStudentToDb(student: Student, onComplete: (Boolean) -> Unit) {
         student.studentMail?.toUserName()?.let {
             Firebase.database.reference.child("student").child(it).setValue(student)
@@ -68,6 +89,10 @@ class FirebaseRepository {
         }
     }
 
+    /*
+    Kayıt olunan öğretmen ise kullanıcı bilgileri ile ekstra olarak veritabanındaki teacher tablosuna
+    da kaydı yapılır bu sayede kullanıcı bilgilerini (eposta, öğretmen adı vs) almak daha da kolaylaşır
+     */
     suspend fun addTeacherToDb(teacher: Teacher, onComplete: (Boolean) -> Unit) {
         teacher.teacherMail?.toUserName()?.let {
             Firebase.database.reference.child("teacher").child(it).setValue(teacher)
@@ -81,6 +106,11 @@ class FirebaseRepository {
         }
     }
 
+    /*
+    Öğretmen yeni ders oluştura tıklayınca bu fonksiyon firebase'e ders oluşturma komutunu gönderir ve TeacherLesson data sınıfında
+    bulunan özelliklerle birlikte yeni dersin kaydını yapar, eğer tüm bu işlemler sonrası başarılı bir şekilde kayıt
+    olmuşsa true olmamışsa false dönecek.
+     */
     suspend fun createNewLesson(lesson: TeacherLesson, completeEvent: (Boolean) -> Unit) {
         Firebase.database.reference.child("lessons")
             .child(System.currentTimeMillis().toString()).setValue(lesson)
@@ -93,6 +123,10 @@ class FirebaseRepository {
             }
     }
 
+    /*
+    Bu fonksiyon sadece öğretmen adını getirmek için kullanılıyor, buradan alınan veriyide çeşitli
+    kısımlarda kullanabiliyoruz, ders oluştur derse öğrenci ekle vs.
+     */
 
     suspend fun getTeacherName(completeEvent: (String, String) -> Unit) {
         Firebase.database.reference.child("teacher")
@@ -109,6 +143,11 @@ class FirebaseRepository {
             }
     }
 
+    /*
+    Öğrenciyi derse kaydederken öncelikle giriş yapacak öğrencinin bilgilerini almak gerekiyor,
+    bu fonksiyonda yapılan tek işlem öğrencci bilgilerini almak ve bu bilgiler ile aşağıda olan,
+    addStudentToLesson fonksiyonunu çağırmaktır.
+     */
     fun getStudentAndAddLesson(uuid: String, completeEvent: (Boolean) -> Unit) {
         Firebase.database.reference.child("student")
             .child(FirebaseAuth.getInstance().currentUser!!.email!!.toUserName()).get()
@@ -121,6 +160,10 @@ class FirebaseRepository {
             }
     }
 
+    /*
+    Buradaki fonksiyonun tek görevi öğretmen giriş yaptığında ekranda eğer varsa öğretmenin oluşturduğu
+    dersleri listeleyebilmek için veritabanındaki öğretmene dair tüm verileri çekmek.
+     */
     suspend fun getTeacherLessons(completeEvent: (List<TeacherLesson>) -> Unit) {
         Firebase.database.reference.child("lessons")
             .addValueEventListener(object : ValueEventListener {
@@ -181,6 +224,11 @@ class FirebaseRepository {
             })
     }
 
+    /*
+    Fonksiyonun göreve adından da anlaşıldığı gibi dersi silmeye yarıyor ancak şuanda kullanılmamakta
+    çünkü dersi oluşturduktan sonra öğretmenlerin dersi silmelereni izin vermemeliyiz bu çeşitli
+    sorunlara sebebiyet verebilir.
+     */
     suspend fun removeLesson(uuid: String, completeEvent: (Boolean) -> Unit) {
         Firebase.database.reference.child("lessons")
             .get().addOnCompleteListener {
@@ -197,6 +245,10 @@ class FirebaseRepository {
             }
     }
 
+    /*
+    Buradaki fonksiyon dersteki haftaya örneğin 5.hafta, giriş yapmış öğrencilerin listesini getiriyor.
+    Getirilen bu listeyi öğretmen sayfasından herhangi bir derse tıkladığımızda ekranda çıkan öğrenci listesidir.
+     */
     suspend fun getListOfStudents(uuid: String, completeEvent: (List<Student>) -> Unit) {
         Firebase.database.reference.child("lessons").get().addOnCompleteListener {
             if (it.isSuccessful) {
@@ -225,6 +277,10 @@ class FirebaseRepository {
         }
     }
 
+    /*
+    Bu fonksiyon ise öğrenci ekranında katıldığı dersleri ve haftaları ekranda göstermek için gerekli verileri çekip
+    dönmeye yaramaktadır.
+     */
     suspend fun listOfLessonsStudentAttempted(
         lesson: Lesson,
         onComplete: (List<TeacherLesson>) -> Unit
@@ -275,6 +331,10 @@ class FirebaseRepository {
             })
     }
 
+    /*
+    Fonksiyon öğrencinin katıldığı dersten kaç hafta devamsızlığı kaldığı bilgisini hesaplayıp
+    dönmektedir. Eğer ders daha önceden aktifleşti ve öğrenci katılmadıysa devamsızlık bir artar.
+     */
     suspend fun getUsersAllLesson(
         lessonName: String,
         totalNonattendance: (Int) -> Unit
@@ -311,6 +371,10 @@ class FirebaseRepository {
             }
     }
 
+    /*
+    Yukarıda daha önceden belirtilen öğrenci bilgisini getirme ve derse ekleme fonksiyonuun devamı. Alınan öğrenci
+    bilgisini yine parametre olarak verilen ilgili derse kaydını sağlayan fonksiyondur.
+     */
     private fun addStudentToLesson(
         uuid: String,
         student: Student,
@@ -340,6 +404,9 @@ class FirebaseRepository {
             }
     }
 
+    /*
+    Dersin aktiflik durumunu değiştirir. eğer ders aktif ise kapatır, kapalı ise aktifleştirir.
+     */
     fun setIsCheckedStatus(lesson: Lesson, checked: Boolean, position: Int) {
         Firebase.database.reference.child("lessons")
             .get().addOnCompleteListener {
@@ -362,6 +429,9 @@ class FirebaseRepository {
             }
     }
 
+    /*
+    Veritabanında bulunan dersin id,sini değiştirir yani QR kodunu değiştirmeyi sağlar,
+     */
     suspend fun changeQrParameter(
         lesson: Lesson,
         randomUUID: String,
@@ -394,6 +464,11 @@ class FirebaseRepository {
             }
     }
 
+    /*
+    Buradaki fonsiyon RepotData sınıfımızın içerisinde bulunan her bir değer için veritabanından verileri
+    alıp ReportData objesini oluşturur. Bu objede derse ait öğrenci isimi ve hangi haftalar katıldığının verisi
+    bulunmaktadır.
+     */
     suspend fun createLessonReport(
         lessonName: String
     ) = suspendCoroutine<List<ReportData>> { contination ->

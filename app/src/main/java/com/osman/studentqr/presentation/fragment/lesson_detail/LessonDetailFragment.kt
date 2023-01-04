@@ -123,17 +123,6 @@ class LessonDetailFragment : BindingFragment<FragmentLessonDetailBinding>() {
         }
     }
 
-    private fun createRemoveDialog() {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setPositiveButton("Evet") { _, _ ->
-            lesson?.lessonUUID?.let { viewModel.removeLesson(it) }
-        }
-        builder.setNegativeButton("Hayır") { _, _ -> }
-        builder.setTitle(lesson?.lessonName)
-        builder.setMessage("Dersi silmek istediğinize emin misiniz?")
-        builder.create().show()
-    }
-
     private fun createQrCodeDialog() {
         if (dialogView == null) {
             return

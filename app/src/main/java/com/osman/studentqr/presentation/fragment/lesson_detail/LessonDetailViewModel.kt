@@ -43,14 +43,6 @@ class LessonDetailViewModel @Inject constructor(
         timer.start()
     }
 
-    fun removeLesson(uuid: String) {
-        viewModelScope.launch {
-            repository.removeLesson(uuid) {
-                isRemoved.value = it
-            }
-        }
-    }
-
     fun getListOfStudents(uuid: String) {
         viewModelScope.launch {
             repository.getListOfStudents(uuid) { listOfStudents ->

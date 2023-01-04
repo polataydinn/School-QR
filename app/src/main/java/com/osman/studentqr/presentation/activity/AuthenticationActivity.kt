@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import com.osman.studentqr.R
 import com.osman.studentqr.presentation.fragment.authentication.login.LoginFragment
@@ -15,6 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class AuthenticationActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_authentication)
         val btnLogin = findViewById<TextView>(R.id.btnLogin)
